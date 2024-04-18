@@ -20,23 +20,30 @@ export default function App() {
         navigation.navigate('AllFilms');
     }
 
-    /**
-  * Função dentro do useEffect que cria a tabela caso ela não exista
-  */
     useEffect(() => {
         db.transaction(tx => {
             tx.executeSql(
-                "CREATE TABLE IF NOT EXISTS filmes (id INTEGER PRIMARY KEY AUTOINCREMENT, filme TEXT NOT NULL, genero TEXT NOT NULL, classificacao TEXT NOT NULL, data DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW', 'localtime')))",
-                [], //[]: Este é o array de parâmetros. Como não estamos usando nenhum parâmetro na consulta SQL, deixamos esse array vazio.
-                () => console.log('Tabela criada com sucesso'),//retorno de  sucesso
-                // '_' É um parâmetro que representa o resultado da transação SQL, por convenção utiliza-se o underscore. para indicar que estamos ignorando esse valor.
-                (_, error) => console.error(error) //retorno de  erro
+                "CREATE TABLE IF NOT EXISTS Clientes (id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT, data_nasc DATE)",
+                [],
+                () => console.log("Tabela 'Clientes' criada"),
+                (error) => console.log("Erro ao criar tabela 'Clientes':", error)
+            );
+    
+            tx.executeSql(
+                "CREATE TABLE IF NOT EXISTS Telefones (id INTEGER PRIMARY KEY AUTOINCREMENT, numero TEXT)",
+                [],
+                () => console.log("Tabela 'Telefones' criada"),
+                (error) => console.log("Erro ao criar tabela 'Telefones':", error)
+            );
+    
+            tx.executeSql(
+                "CREATE TABLE IF NOT EXISTS tbl_telefones_has_tbl_pessoa (id_telefone INTEGER, id_pessoa INTEGER, CONSTRAINT fk_tbl_telefone_id FOREIGN KEY (id_telefone) REFERENCES tbl_telefones (id), CONSTRAINT fk_tbl_pessoa_id FOREIGN KEY (id_pessoa) REFERENCES tbl_clientes (id))",
+                [],
+                () => console.log("Tabela 'tbl_telefones_has_tbl_pessoa'"),
+                (error) => console.log("Erro ao criar tabela 'tbl_telefones_has_tbl_pessoa':", error)
             );
         });
     }, []);
-    /**
-    * Função utilizada para deletar as tabelas e a base de dados
-    */
 
 
 
