@@ -1,25 +1,114 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Button, TextInput, Alert, SafeAreaView, Platform, ScrollView, TouchableOpacity, Image } from 'react-native';
-import { getStatusBarHeight } from 'react-native-status-bar-height';
-import { DatabaseConnection } from '../../database/database'
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
-import { useNavigation, StackActions } from '@react-navigation/native'
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { DatabaseConnection } from '../../database/database';
 
-// Abra ou crie o banco de dados SQLite
-const db = new DatabaseConnection.getConnection;
+const db = DatabaseConnection.getConnection();
 
-export default function App() {
+export default function Cadastro() {
+    const [nome, setNome] = useState('');
+    const [dataNasc, setDataNasc] = useState('');
+    const [telefone, setTelefone] = useState('');
+    const navigation = useNavigation();
+
+    const Cadastrar = () => {
+        console.log("Dados do formulário:", nome, dataNasc, telefone);
+        db.transaction(tx => {
+            tx.executeSql(
+                "INSERT INTO Clientes (nome, data_nasc) VALUES (?, ?)",
+                [nome, dataNasc],
+                (_, resultCliente) => {
+                    console.log("Sucesso ao inserir cliente:", resultCliente);
+                    const idCliente = resultCliente.insertId;
+
+                    tx.executeSql(
+                        "INSERT INTO Telefones (numero) VALUES (?)",
+                        [telefone],
+                        (_, resultTelefone) => {
+                            console.log("Sucesso ao inserir telefone:", resultTelefone);
+                            const idTelefone = resultTelefone.insertId;
+
+                            tx.executeSql(
+                                "INSERT INTO tbl_telefones_has_tbl_pessoa (id_telefone, id_pessoa) VALUES (?, ?)",
+                                [idTelefone, idCliente],
+                                (_, resultRelacao) => {
+                                    console.log("Sucesso ao inserir relação:", resultRelacao);
+                                    Alert.alert("Info", "Registro inserido com sucesso");
+                                    setNome('');
+                                    setDataNasc('');
+                                    setTelefone('');
+                                },
+                                (error) => console.log("Erro ao inserir relação:", error)
+                            );
+                        },
+                        (error) => console.log("Erro ao inserir telefone:", error)
+                    );
+                },
+                (error) => console.log("Erro ao inserir cliente:", error)
+            );
+        });
+    };
+
+    const handleGoBack = () => {
+        navigation.goBack();
+    };
 
     return (
-        <SafeAreaProvider>
-            <SafeAreaView>
-
-            </SafeAreaView>
-        </SafeAreaProvider>
+        <View style={styles.container}>
+            <TextInput
+                style={styles.input}
+                placeholder="Nome"
+                value={nome}
+                onChangeText={text => setNome(text)}
+            />
+            <TextInput
+                style={styles.input}
+                placeholder="Data de Nascimento (DD/MM/YYYY)"
+                value={dataNasc}
+                onChangeText={text => setDataNasc(text)}
+            />
+            <TextInput
+                style={styles.input}
+                placeholder="Telefone"
+                value={telefone}
+                onChangeText={text => setTelefone(text)}
+            />
+            <TouchableOpacity style={styles.button} onPress={Cadastrar}>
+                <Text style={styles.buttonText}>Salvar</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={handleGoBack}>
+                <Text style={styles.buttonText}>Voltar</Text>
+            </TouchableOpacity>
+        </View>
     );
 }
 
 const styles = StyleSheet.create({
-  
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#fff',
+        padding: 20,
+    },
+    input: {
+        width: '100%',
+        height: 40,
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 5,
+        paddingHorizontal: 10,
+        marginBottom: 20,
+    },
+    button: {
+        backgroundColor: '#007bff',
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 5,
+        marginBottom: 10,
+    },
+    buttonText: {
+        color: '#fff',
+        fontSize: 16,
+    },
 });
