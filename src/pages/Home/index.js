@@ -13,11 +13,8 @@ export default function App() {
 
     const navigation = useNavigation();
 
-    const config = () => {
-        navigation.navigate('Config');
-    }
-    const allFilms = () => {
-        navigation.navigate('AllFilms');
+    const Cadastro = () => {
+        navigation.navigate('Cadastro');
     }
 
     useEffect(() => {
@@ -50,7 +47,7 @@ export default function App() {
     return (
         <SafeAreaProvider>
             <SafeAreaView>
-
+                <TouchableOpacity onPress={Cadastro}></TouchableOpacity>
             </SafeAreaView>
         </SafeAreaProvider>
     );
