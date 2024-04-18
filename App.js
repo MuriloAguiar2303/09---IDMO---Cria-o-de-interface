@@ -23,6 +23,14 @@ export default function App() {
             headerShown: false
           }}
         />
+          <Stack.Screen
+          name='Cadastro'
+          component={Cadastro}
+          options={{
+            title: 'Home',
+            headerShown: false
+          }}
+        />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>

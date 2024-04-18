@@ -42,10 +42,7 @@ export default function App() {
 
     return (
         <SafeAreaProvider>
-            <SafeAreaView style={styles.androidSafeArea}>
-                <View style={styles.container}>
-                    <Text style={styles.title}>Tela home teste</Text>
-                </View>
+            <SafeAreaView>
 
             </SafeAreaView>
         </SafeAreaProvider>
@@ -53,53 +50,5 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
-    androidSafeArea: {
-        flex: 1,
-        paddingTop: Platform.OS === 'android' ? getStatusBarHeight() : 0,
-        marginTop: 10,
-        backgroundColor: '#fff'
-    },
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: '100%',
-        backgroundColor: '#fff',
-        padding: 15,
-        gap: 10
-    },
-    alinharEmLinha: {
-        flexDirection: 'row',
-        justifyContent: 'flex-end',
-        margin: 15,
-    },
-    buttonConfig: {
-
-    },
-    button: {
-        borderRadius: 10,
-        backgroundColor: "#873fda",
-        height: 60,
-        width: '90%',
-        justifyContent: "center",
-        alignItems: "center",
-        gap: 10,
-        elevation: 7,
-        marginBottom: 30
-    },
-    textButton: {
-        color: '#FFF',
-        fontSize: 26,
-        fontWeight: 'bold'
-    },
-    title: {
-        fontSize: 26,
-        letterSpacing: 6,
-        textAlign: 'center',
-        color: '#873fda'
-    },
-    buttonTable: {
-        flexDirection: 'row',
-        gap: 15
-    }
+  
 });
