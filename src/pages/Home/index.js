@@ -45,14 +45,33 @@ export default function App() {
 
 
     return (
-        <SafeAreaProvider>
+        <SafeAreaProvider style={styles.container}>
             <SafeAreaView>
-                <TouchableOpacity onPress={Cadastro}></TouchableOpacity>
+                <TouchableOpacity onPress={Cadastro} style={styles.button}>
+                    <Text style={styles.buttonText}>Cadastrar</Text>
+                </TouchableOpacity>
             </SafeAreaView>
         </SafeAreaProvider>
     );
 }
 
 const styles = StyleSheet.create({
-  
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#fff',
+    },
+    button: {
+        backgroundColor: '#007bff',
+        paddingVertical: 12,
+        paddingHorizontal: 30,
+        borderRadius: 5,
+    },
+    buttonText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: 'bold',
+        textAlign: 'center',
+    },
 });
