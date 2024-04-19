@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Alert, Modal, TextInput } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { DatabaseConnection } from '../../database/database';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const db = DatabaseConnection.getConnection();
 
@@ -64,7 +65,8 @@ export default function DetalhesCliente() {
                 }
             );
             tx.executeSql(
-                'UPDATE Telefones Set numero, join tbl_telefones_has_tbl_pessoa on tbl_telefones_has_tbl_pessoa'
+                'UPDATE Telefones SET numero = ? where id = ?',
+                [telefone,id]  
             )
         });
     };
@@ -88,7 +90,6 @@ export default function DetalhesCliente() {
                                 (_, { rowsAffected }) => {
                                     console.log(`${rowsAffected} registros na tabela tbl_telefones_has_tbl_pessoa excluídos com sucesso.`);
                                     tx.executeSql(
-                                        //Me perdi na hora de deletar o cliente pq eu n sei como fazer ja que n existe cliente id nessa tabela, foi mal professor
                                         'DELETE FROM Telefones WHERE id = ?',
                                         [id],
                                         (_, { rowsAffected }) => {
@@ -126,7 +127,7 @@ export default function DetalhesCliente() {
     
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             {cliente ? (
                 <View>
                     <Text style={styles.label}>Nome:</Text>
@@ -139,14 +140,16 @@ export default function DetalhesCliente() {
             ) : (
                 <Text style={styles.error}>Carregando...</Text>
             )}
-            <TouchableOpacity style={styles.button} onPress={handleGoBack}>
+            <View style={styles.buttonsContainer}>
+                <TouchableOpacity style={[styles.button, styles.deleteButton]} onPress={handleDelete}>
+                    <Text style={styles.buttonText}>Excluir</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.button} onPress={() => setModalVisible(true)}>
+                    <Text style={styles.buttonText}>Editar</Text>
+                </TouchableOpacity>
+            </View>
+            <TouchableOpacity style={styles.goBackButton} onPress={handleGoBack}>
                 <Text style={styles.buttonText}>Voltar</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={() => setModalVisible(true)}>
-                <Text style={styles.buttonText}>Editar</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.button, styles.deleteButton]} onPress={handleDelete}>
-                <Text style={styles.buttonText}>Excluir</Text>
             </TouchableOpacity>
             <Modal
                 animationType="slide"
@@ -186,14 +189,18 @@ export default function DetalhesCliente() {
                     </View>
                 </View>
             </Modal>
-        </View>
+        </SafeAreaView>
     );
 }
+
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 20,
+        backgroundColor: '#d8f9ee9',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     label: {
         fontSize: 18,
@@ -208,17 +215,33 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: 'red',
     },
+    buttonsContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        width: '100%',
+        marginBottom: 20,
+    },
     button: {
         backgroundColor: '#007bff',
-        paddingVertical: 10,
-        paddingHorizontal: 20,
+        paddingVertical: 12,
+        paddingHorizontal: 24,
         borderRadius: 5,
-        marginTop: 20,
+        width: '48%',
+    },
+    goBackButton: {
+        backgroundColor: '#007bff',
+        paddingVertical: 12,
+        paddingHorizontal: 24,
+        borderRadius: 5,
+        width: '100%',
     },
     buttonText: {
         color: '#fff',
         fontSize: 16,
         textAlign: 'center',
+    },
+    deleteButton: {
+        backgroundColor: '#dc3545',
     },
     modalContainer: {
         flex: 1,
@@ -247,15 +270,15 @@ const styles = StyleSheet.create({
     },
     saveButton: {
         backgroundColor: '#007bff',
-        paddingVertical: 10,
-        paddingHorizontal: 20,
+        paddingVertical: 12,
+        paddingHorizontal: 24,
         borderRadius: 5,
         marginTop: 20,
     },
     closeButton: {
         backgroundColor: '#dc3545',
-        paddingVertical: 10,
-        paddingHorizontal: 20,
+        paddingVertical: 12,
+        paddingHorizontal: 24,
         borderRadius: 5,
         marginTop: 10,
     },

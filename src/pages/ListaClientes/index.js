@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { DatabaseConnection } from '../../database/database';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const db = DatabaseConnection.getConnection();
 
@@ -44,39 +45,57 @@ export default function ListaClientes() {
     };
 
     return (
-        <View style={styles.container}>
-            <FlatList
-                data={clientes}
-                renderItem={renderItem}
-                keyExtractor={item => item.id.toString()}
-                contentContainerStyle={{ flexGrow: 1 }}
-                ListEmptyComponent={<Text style={styles.emptyText}>Nenhum cliente cadastrado.</Text>}
-            />
-            <TouchableOpacity style={styles.button} onPress={handleGoBack}>
-                <Text style={styles.buttonText}>Voltar</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={handleNavigateToCadastro}>
-                <Text style={styles.buttonText}>Cadastrar Novo Cliente</Text>
-            </TouchableOpacity>
-        </View>
+        <SafeAreaView style={styles.container}>
+                <View style={styles.header}>
+                    <Text style={styles.headerText}>Lista de Clientes</Text>
+                </View>
+                <FlatList
+                    data={clientes}
+                    renderItem={renderItem}
+                    keyExtractor={item => item.id.toString()}
+                    contentContainerStyle={clientes.length === 0 && styles.emptyListContainer}
+                    ListEmptyComponent={<Text style={styles.emptyText}>Nenhum cliente cadastrado.</Text>}
+                />
+                <TouchableOpacity style={styles.button} onPress={handleNavigateToCadastro}>
+                    <Text style={styles.buttonText}>Cadastrar Novo Cliente</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.goBackButton} onPress={handleGoBack}>
+                    <Text style={styles.buttonText}>Voltar</Text>
+                </TouchableOpacity>
+        </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
+        backgroundColor: '#f5f5f5',
+    },
+    header: {
+        backgroundColor: '#007bff',
+        paddingVertical: 20,
+        paddingHorizontal: 20,
+        marginBottom: 20,
         alignItems: 'center',
-        padding: 50,
-        backgroundColor: '#fff',
+    },
+    headerText: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        color: '#fff',
     },
     item: {
-        padding: 10,
+        backgroundColor: '#fff',
+        padding: 20,
         borderBottomWidth: 1,
         borderBottomColor: '#ccc',
     },
     itemText: {
         fontSize: 18,
+    },
+    emptyListContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        flex: 1,
     },
     emptyText: {
         fontSize: 18,
@@ -84,10 +103,19 @@ const styles = StyleSheet.create({
     },
     button: {
         backgroundColor: '#007bff',
-        paddingVertical: 10,
+        paddingVertical: 12,
         paddingHorizontal: 20,
         borderRadius: 5,
         marginBottom: 10,
+        marginHorizontal: 20,
+    },
+    goBackButton: {
+        backgroundColor: '#007bff',
+        paddingVertical: 12,
+        paddingHorizontal: 20,
+        borderRadius: 5,
+        marginBottom: 20,
+        marginHorizontal: 20,
     },
     buttonText: {
         color: '#fff',

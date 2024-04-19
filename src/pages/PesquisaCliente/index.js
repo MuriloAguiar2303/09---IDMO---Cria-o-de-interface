@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, FlatList } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { DatabaseConnection } from '../../database/database';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const db = DatabaseConnection.getConnection();
 
@@ -14,7 +14,7 @@ export default function PesquisaCliente() {
     const handleSearch = () => {
         db.transaction(tx => {
             tx.executeSql(
-                'SELECT Clientes.nome, Clientes.data_nasc,Telefones.numero FROM Clientes join WHERE nome LIKE ? OR data_nasc LIKE ?',
+                'SELECT c.nome, c.data_nasc, t.numero FROM Clientes c LEFT JOIN tbl_telefones_has_tbl_pessoa tp ON c.id = tp.id_pessoa LEFT JOIN Telefones t ON tp.id_telefone = t.id WHERE c.nome LIKE ? OR t.numero LIKE ?',
                 [`%${input}%`, `%${input}%`],
                 (_, { rows }) => {
                     setResultados(rows._array);
@@ -34,12 +34,11 @@ export default function PesquisaCliente() {
     };
 
     return (
-        <SafeAreaProvider>
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <Text style={styles.title}>Pesquisar Cliente</Text>
             <TextInput
                 style={styles.input}
-                placeholder="Digite o nome ou data de nascimento do cliente"
+                placeholder="Digite o nome ou número de telefone do cliente"
                 value={input}
                 onChangeText={text => setInput(text)}
             />
@@ -49,30 +48,29 @@ export default function PesquisaCliente() {
             <FlatList
                 data={resultados}
                 renderItem={renderItem}
-                keyExtractor={item => item.id.toString()}
+                keyExtractor={(item, index) => item.id ? item.id.toString() : index.toString()}
                 contentContainerStyle={{ flexGrow: 1 }}
                 ListEmptyComponent={<Text style={styles.emptyText}>Nenhum cliente encontrado.</Text>}
             />
             <TouchableOpacity style={styles.goBackButton} onPress={handleGoBack}>
                 <Text style={styles.goBackButtonText}>Voltar</Text>
             </TouchableOpacity>
-        </View>
-        </SafeAreaProvider>
+        </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 50,
+        paddingHorizontal: 20,
+        paddingTop: 20,
         backgroundColor: '#fff',
     },
     title: {
         fontSize: 24,
         fontWeight: 'bold',
         marginBottom: 20,
+        textAlign: 'center',
     },
     input: {
         width: '100%',
@@ -92,6 +90,7 @@ const styles = StyleSheet.create({
     buttonText: {
         color: '#fff',
         fontWeight: 'bold',
+        textAlign: 'center',
     },
     item: {
         padding: 10,
@@ -113,5 +112,6 @@ const styles = StyleSheet.create({
     goBackButtonText: {
         color: '#000',
         fontWeight: 'bold',
+        textAlign: 'center',
     },
 });

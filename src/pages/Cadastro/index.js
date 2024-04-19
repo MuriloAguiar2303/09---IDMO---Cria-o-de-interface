@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
         padding: 20,
     },
     input: {
-        width: '100%',
+        width: '80%',
         height: 40,
         borderWidth: 1,
         borderColor: '#ccc',
@@ -102,13 +102,15 @@ const styles = StyleSheet.create({
     },
     button: {
         backgroundColor: '#007bff',
-        paddingVertical: 10,
-        paddingHorizontal: 20,
+        paddingVertical: 12,
+        paddingHorizontal: 24,
         borderRadius: 5,
         marginBottom: 10,
+        width: '80%',
     },
     buttonText: {
         color: '#fff',
         fontSize: 16,
+        textAlign: 'center',
     },
 });

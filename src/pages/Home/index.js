@@ -61,21 +61,21 @@ export default function Home() {
                 () => console.log("Tabela 'Clientes' criada"),
                 (error) => console.log("Erro ao criar tabela 'Clientes':", error)
             );
-        
+
             tx.executeSql(
-                  "CREATE TABLE IF NOT EXISTS Telefones (id INTEGER PRIMARY KEY AUTOINCREMENT, numero TEXT)",
+                "CREATE TABLE IF NOT EXISTS Telefones (id INTEGER PRIMARY KEY AUTOINCREMENT, numero TEXT)",
                 [],
                 () => console.log("Tabela 'Telefones' criada"),
                 (error) => console.log("Erro ao criar tabela 'Telefones':", error)
             );
-        
+
             tx.executeSql(
                 "CREATE TABLE IF NOT EXISTS tbl_telefones_has_tbl_pessoa (id_telefone INTEGER, id_pessoa INTEGER, CONSTRAINT fk_tbl_telefone_id FOREIGN KEY (id_telefone) REFERENCES tbl_telefones (id), CONSTRAINT fk_tbl_pessoa_id FOREIGN KEY (id_pessoa) REFERENCES tbl_clientes (id))",
                 [],
                 () => console.log("Tabela 'tbl_telefones_has_tbl_pessoa'"),
                 (error) => console.log("Erro ao criar tabela 'tbl_telefones_has_tbl_pessoa':", error)
             );
-        });        
+        });
     }, [todos]);
 
     return (
@@ -89,7 +89,8 @@ export default function Home() {
             <TouchableOpacity onPress={goToPesquisaCliente} style={styles.button}>
                 <Text style={styles.buttonText}>Ir para Pesquisa de Cliente</Text>
             </TouchableOpacity>
-            <Button title="Button Suicide" onPress={() => {
+            <View style={styles.SuicidBu}>
+                <Button title="Button Suicide" onPress={() => {
                     Alert.alert(
                         "Atenção!",
                         'Deseja excluir oO BANCO DE DADOS????? VC VAI PERDE TUDO E N TEM VOLTA!',
@@ -106,6 +107,7 @@ export default function Home() {
                     )
 
                 }} />
+            </View>
         </SafeAreaView>
     );
 }
@@ -123,9 +125,16 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         borderRadius: 5,
         marginVertical: 10,
+        width: '80%',
+        alignItems: 'center',
     },
     buttonText: {
         color: '#fff',
         fontSize: 16,
     },
+    SuicidBu:{
+        bottom: 10,
+        position: 'absolute',
+        width: '80%',
+    }
 });
