@@ -89,7 +89,7 @@ export default function DetalhesCliente() {
                                     console.log(`${rowsAffected} registros na tabela tbl_telefones_has_tbl_pessoa excluídos com sucesso.`);
                                     tx.executeSql(
                                         //Me perdi na hora de deletar o cliente pq eu n sei como fazer ja que n existe cliente id nessa tabela, foi mal professor
-                                        'DELETE FROM Telefones WHERE cliente_id = ?',
+                                        'DELETE FROM Telefones WHERE id = ?',
                                         [id],
                                         (_, { rowsAffected }) => {
                                             console.log(`${rowsAffected} números de telefone excluídos com sucesso.`);
